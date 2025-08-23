@@ -106,13 +106,16 @@ const updateProduct = asyncHandler(async (req, res) => {
     subCategory: "required|string|regex:^[0-9a-fA-F]{24}$",
   });
 
+
+  
+
   const matched = v.check();
   if (!matched) {
     throw createError(400, v.errors);
   }
 
 
-  
+
 
   const cacheKey = req.originalUrl;
   const productId = req.params.id;

@@ -1,6 +1,8 @@
 //
 import User from "../model/user.model.js";
 import Role from "../model/role.model.js";
+import Category from "../model/category.model.js"
+import { Validator } from "node-input-validator";
 import createError from "../helper/apiError.js";
 import bcrypt, { hash } from "bcryptjs";
 import asyncHandler from "express-async-handler";
@@ -89,6 +91,7 @@ const createRoll = asyncHandler(async (req, res) => {
     role,
   });
 });
+
 
 const authController = {
   register,

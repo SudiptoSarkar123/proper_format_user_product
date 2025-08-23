@@ -11,8 +11,11 @@ const app = express();
 app.use(express.json());
 
 
-import router from "./app/router/auth.route.js";
-app.use("/api/v1/auth", router);
+import authRouter from "./app/router/auth.route.js";
+import productRouter from "./app/router/product.route.js";
+
+app.use("/api/v1", authRouter);
+app.use("/api/v1", productRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

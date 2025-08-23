@@ -7,10 +7,10 @@ const productSchema = new mongoose.Schema({
     category:{type:mongoose.Schema.Types.ObjectId,ref:"Category"
     },
     subCategory:{type:mongoose.Schema.Types.ObjectId,ref:"Category"},
-    isActive:{type:Boolean,default:false},
+    isActive:{type:Boolean,default:true},
     image:{type:String},
 })
 
+const productModel = mongoose.model("Product",productSchema)
 
-
-module.exports = mongoose.model("Product",productSchema)
+export default productModel 

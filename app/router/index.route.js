@@ -9,7 +9,4 @@ router.use("/auth", authRouter);
 router.use('/products',redisDatabase,productRouter)
 
 
-
-
-
 export default router

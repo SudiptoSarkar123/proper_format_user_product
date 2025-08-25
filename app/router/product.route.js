@@ -3,10 +3,11 @@ const router = express.Router()
 import ProductController from '../controller/product.controller.js'
 
 
-router.post('/products/category',ProductController.createCategory)
-router.post('/products',ProductController.createProduct)
-router.get('/products/:id',ProductController.getProduct)
-router.put('/products/:id',ProductController.updateProduct)
+router.post('/category',ProductController.createCategory)
+router.post('/',ProductController.createProduct)
+router.get('/:id',ProductController.getProduct)
+router.put('/:id',ProductController.updateProduct)
+router.put('/assign/:id/:productId',ProductController.assingProductToUser)
 
 
 export default router 

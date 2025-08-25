@@ -81,21 +81,40 @@ const login = asyncHandler(async (req, res) => {
 
 const createRoll = asyncHandler(async (req, res) => {
   const { name, permissions } = req.body;
-  const isExist = await Role.findOne({ name });
+  const roleName = name.toLowerCase()
+  const isExist = await Role.findOne({ name:roleName });
   if (isExist) {
     throw createError(400, "Role already exist");
   }
-  const role = await Role.create({ name, permissions });
+  const role = await Role.create({ name:roleName, permissions });
   return res.status(201).json({
     message: "Role created successfully",
     role,
   });
 });
 
+const updateRolePermission = asyncHandler(async (req,res) =>{
+  const { name, permissions } = req.body;
+  const roleName = name.toLowerCase()
+
+  const isExist = await Role.findOne({ name:roleName });
+  if (!isExist) {
+    throw createError(400, "Role does not exist");
+  }
+  const role = await Role.updateOne({ name:roleName }, { permissions });
+  return res.status(201).json({
+    message: "Role updated successfully",
+    role,
+  });
+
+
+})
+
 
 const authController = {
   register,
   login,
-  createRoll,
+    createRoll,
+  updateRolePermission
 };
 export default authController;

@@ -1,25 +1,23 @@
 import dotenv from "dotenv";
-dotenv.config(); // <-- Move this to the top
-
 import express from "express";
+import compression from "compression";
 import dbcon from "./app/config/dbcon.js";
+import indexRouter from "./app/router/index.route.js";
 
-dbcon();
+dotenv.config();
 
 const app = express();
 
+
+dbcon();
+
+app.use(compression({threshold:1024}));
 app.use(express.json());
 
+app.use("/api/v1", indexRouter);
 
-import authRouter from "./app/router/auth.route.js";
-import productRouter from "./app/router/product.route.js";
-
-app.use("/api/v1", authRouter);
-app.use("/api/v1", productRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log("Server is running ", PORT);
+  console.log(`Server is running on port ${PORT}`);
 });
-
-

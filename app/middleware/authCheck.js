@@ -7,6 +7,8 @@ const authCheck = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       next(createError(401, "You are not authenticated!"));
     }
+
+    // console.log(authHeader);
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
@@ -25,5 +27,4 @@ const authCheck = async (req, res, next) => {
   }
 };
 
-
-export default authCheck
+export default authCheck;

@@ -1,11 +1,11 @@
 import express from "express";
 import authController from "../controller/auth.controller.js";
-import authCheck from "../middleware/authCheck.js";
-
 const router = express.Router();
 
-router.post("/auth/register", authController.register);
-router.post("/auth/login", authController.login);
-router.post("/auth/roll", authController.createRoll);
+router.post("/register", authController.register);
+router.post("/login", authController.login);
+router.post("/roll", authController.createRoll);
+router.put("/permission", authController.updateRolePermission);
+
 
 export default router

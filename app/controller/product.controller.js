@@ -1,9 +1,10 @@
 import Category from "../model/category.model.js";
 import Product from "../model/product.model.js";
+import User from "../model/user.model.js"
 import createError from "../helper/apiError.js";
 import asyncHandler from "express-async-handler";
 import { Validator } from "node-input-validator";
-import redis from "../../redis.js";
+import redis from "../../app/config/redis.config.js";
 import mongoose from "mongoose";
 
 const createCategory = asyncHandler(async (req, res) => {
@@ -77,24 +78,21 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 const getProduct = asyncHandler(async (req, res) => {
-  const cacheKey = req.originalUrl;
+    const cacheKey = `product:${req.params.id}`;
+
   const productId = req.params.id;
+  
+  const product = await Product.findById(productId).lean();
 
-  const cachedProduct = await redis.get(cacheKey);
-  if (cachedProduct) {
-    console.log("Data served from Redis cache.");
-    return res.status(200).json(JSON.parse(cachedProduct));
-  }
-
-  const product = await Product.findById(productId);
   if (!product) {
     throw createError(404, "Product not found");
   }
+  
+  res.status(200).json(product);
 
   await redis.set(cacheKey, JSON.stringify(product), "EX", 3600);
   console.log("Data fetched from MongoDb and cachedin Redis");
-
-  return res.status(200).json(product);
+  return
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
@@ -106,16 +104,10 @@ const updateProduct = asyncHandler(async (req, res) => {
     subCategory: "required|string|regex:^[0-9a-fA-F]{24}$",
   });
 
-
-  
-
   const matched = v.check();
   if (!matched) {
     throw createError(400, v.errors);
   }
-
-
-
 
   const cacheKey = req.originalUrl;
   const productId = req.params.id;
@@ -139,11 +131,29 @@ const updateProduct = asyncHandler(async (req, res) => {
   return res.status(200).json(updateProduct);
 });
 
+const assingProductToUser = asyncHandler(async (req, res) =>{
+
+  const user = await User.findById(req.params.id)
+  if(!user){
+    throw createError(404,"User not found")
+  }
+
+  const product = await Product.findById(req.params?.productId)
+  if(!product){
+    throw createError(404,"Product not found")
+  }
+
+  user.assignedProducts.push(product._id)
+  await user.save()
+  return res.status(200).json(user)
+})
+
 const produtController = {
   createCategory,
   createProduct,
   getProduct,
-  updateProduct
+  updateProduct,
+  assingProductToUser
 };
 
 export default produtController;

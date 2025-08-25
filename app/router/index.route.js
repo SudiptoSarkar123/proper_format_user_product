@@ -8,7 +8,7 @@ const router = express.Router();
 router.use("/auth", authRouter);
 router.use('/products',redisDatabase,productRouter)
 
-
+// dfsdf
 
 
 export default router

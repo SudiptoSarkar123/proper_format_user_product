@@ -8,6 +8,7 @@ router.post('/',ProductController.createProduct)
 router.get('/:id',ProductController.getProduct)
 router.put('/:id',ProductController.updateProduct)
 router.put('/assign/:id/:productId',ProductController.assingProductToUser)
+router.put('/image/:id',ProductController.updateProductImage)
 
 
 export default router 

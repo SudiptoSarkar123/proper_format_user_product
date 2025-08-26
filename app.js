@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import cors from "cors";
 import compression from "compression";
 import dbcon from "./app/config/dbcon.js";
 import indexRouter from "./app/router/index.route.js";
@@ -7,6 +8,7 @@ import indexRouter from "./app/router/index.route.js";
 dotenv.config();
 
 const app = express();
+app.use(cors());
 
 
 dbcon();

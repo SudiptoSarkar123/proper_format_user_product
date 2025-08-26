@@ -6,6 +6,8 @@ import asyncHandler from "express-async-handler";
 import { Validator } from "node-input-validator";
 import redis from "../../app/config/redis.config.js";
 import mongoose from "mongoose";
+import uploadToCloudinary from "../helper/uploadToCloudinary.js"; 
+import cloudinary from "../config/cloudinary.config.js";
 
 const createCategory = asyncHandler(async (req, res) => {
   const v = new Validator(req.body, {
@@ -148,12 +150,42 @@ const assingProductToUser = asyncHandler(async (req, res) =>{
   return res.status(200).json(user)
 })
 
+const updateProductImage = asyncHandler(async (req,res) =>{
+
+  if(!req.file) throw createError(404,"No image file provided");
+
+  const product = await Product.findById(req.params.id);
+  if(!product){
+
+    throw createError(404,"Product not found");
+  
+  } 
+    
+
+
+  // upload to Cloudinary
+  const result = await uploadToCloudinary(req.file.buffer);
+
+  if(product.productImagePublicId){
+    await cloudinary.uploader.destroy(product.productImagePublicId) ;
+  }
+
+  product.imageUrl = result.secure_url;
+  product.productImagePublicId = result.public_id;
+
+  await product.save();
+
+
+  res.json({success:true, url: product.imageUrl})
+});
+
 const produtController = {
   createCategory,
   createProduct,
   getProduct,
   updateProduct,
-  assingProductToUser
+  assingProductToUser,
+  updateProductImage
 };
 
 export default produtController;

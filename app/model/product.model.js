@@ -8,7 +8,8 @@ const productSchema = new mongoose.Schema({
     },
     subCategory:{type:mongoose.Schema.Types.ObjectId,ref:"Category"},
     isActive:{type:Boolean,default:true},
-    image:{type:String},
+    imageUrl:{type:String},
+    productImagePublicId:{type:String}
 })
 
 const productModel = mongoose.model("Product",productSchema)

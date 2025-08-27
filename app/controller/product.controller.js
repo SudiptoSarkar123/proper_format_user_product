@@ -79,23 +79,7 @@ const createProduct = asyncHandler(async (req, res) => {
   });
 });
 
-const getProduct = asyncHandler(async (req, res) => {
-    const cacheKey = `product:${req.params.id}`;
 
-  const productId = req.params.id;
-  
-  const product = await Product.findById(productId).lean();
-
-  if (!product) {
-    throw createError(404, "Product not found");
-  }
-  
-  res.status(200).json(product);
-
-  await redis.set(cacheKey, JSON.stringify(product), "EX", 3600);
-  console.log("Data fetched from MongoDb and cachedin Redis");
-  return
-});
 
 const updateProduct = asyncHandler(async (req, res) => {
   const v = new Validator(req.body, {
@@ -161,8 +145,6 @@ const updateProductImage = asyncHandler(async (req,res) =>{
   
   } 
     
-
-
   // upload to Cloudinary
   const result = await uploadToCloudinary(req.file.buffer);
 
@@ -179,13 +161,94 @@ const updateProductImage = asyncHandler(async (req,res) =>{
   res.json({success:true, url: product.imageUrl})
 });
 
+const getProduct = asyncHandler(async (req, res) => {
+    const cacheKey = `product:${req.params.id}`;
+
+  const productId = req.params.id;
+  
+  const product = await Product.findById(productId).lean();
+
+  if (!product) {
+    throw createError(404, "Product not found");
+  }
+  
+  res.status(200).json(product);
+
+  await redis.set(cacheKey, JSON.stringify(product), "EX", 3600);
+  console.log("Data fetched from MongoDb and cachedin Redis");
+  return
+});
+
+const getAllProducts = asyncHandler(async (req,res)=>{
+  // console.log('hi')
+  const query = { isActive : true };
+  console.log(req.query);
+  // const {page:pg, limit:lt} = req.query
+
+  //filters 
+  if(req.query.category){
+    query.category = req.query.category;
+  }
+  if(req.query.subCategory){
+    query.subCategory = req.query.subCategory;
+  }
+  //Search by procuct name
+  if(req.query.name){
+    query.name = {$regex: req.query.name, $options:'i'}
+  }
+
+  //price  range filter 
+  if(req.query.minPrice || req.query.maxPrice){
+    query.price = {}
+    if(req.query.minPrice){
+      query.price.$gte = Number(req.query.minPrice)
+    }
+    if(req.query.maxPrice){
+      query.price.$lte = Number(req.query.maxPrice)
+    }
+
+  }
+
+  // Quantity range filter
+  if(req.query.minQuantity || req.query.maxQuantity) {
+    query.quantity = {};
+    if(req.query.minQuantity){
+      query.quantity.$gte = Number(req.query.minQuantity)
+    }
+    if(req.query.maxQuantity){
+      query.quantity.$gte = Number(req.query.maxQuantity)
+    }
+  }
+
+
+  // appling pagination (12 per page)
+
+  const page = parseInt(req.query.page) || 1 ;
+  const limit = 12 ;
+  const skip = (page -1) * limit;
+
+  const totalProducts = await Product.countDocuments(query);
+  const products = await Product.find(query).skip(skip).limit(12);
+
+   res.status(200).json({
+    message:"Product fetched successfully",
+    currentPage: page,
+    totalPages:Math.ceil(totalProducts / limit),
+    totalProducts,
+    products,
+  })
+
+
+})
+
 const produtController = {
   createCategory,
   createProduct,
   getProduct,
   updateProduct,
   assingProductToUser,
-  updateProductImage
+  updateProductImage,
+  getAllProducts
 };
 
 export default produtController;

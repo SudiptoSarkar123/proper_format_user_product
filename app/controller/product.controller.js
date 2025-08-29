@@ -230,13 +230,22 @@ const getAllProducts = asyncHandler(async (req,res)=>{
   const totalProducts = await Product.countDocuments(query);
   const products = await Product.find(query).skip(skip).limit(12);
 
-   res.status(200).json({
+ const response = {
     message:"Product fetched successfully",
     currentPage: page,
     totalPages:Math.ceil(totalProducts / limit),
     totalProducts,
     products,
-  })
+  }
+
+  res.status(200).json(response)
+
+  if(req.cacheKey){
+    await redis.set(req.cacheKey, JSON.stringify(response),"EX",3600);
+    console.log("All Products cached in Redis");
+  }
+
+  return ;
 
 
 })

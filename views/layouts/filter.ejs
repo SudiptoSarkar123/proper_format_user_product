@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products</title>
+    <link rel="stylesheet" href="/css/.css">
+</head>
+<body>
+    <div class="product-page-container">
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+            <h3>Filters</h3>
+            <form id="filter-form">
+                <div class="filter-group">
+                    <label for="name">Product Name</label>
+                    <input type="text" id="name" name="name" placeholder="Search by name...">
+                </div>
+                <div class="filter-group">
+                    <label for="category">Category</label>
+                    <input type="text" id="category" name="category" placeholder="e.g., Electronics">
+                </div>
+                <div class="filter-group">
+                    <label for="subCategory">Sub-Category</label>
+                    <input type="text" id="subCategory" name="subCategory" placeholder="e.g., Mobiles">
+                </div>
+                <div class="filter-group">
+                    <label>Price Range</label>
+                    <div class="range-inputs">
+                        <input type="number" id="minPrice" name="minPrice" placeholder="Min">
+                        <input type="number" id="maxPrice" name="maxPrice" placeholder="Max">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Quantity Range</label>
+                    <div class="range-inputs">
+                        <input type="number" id="minQuantity" name="minQuantity" placeholder="Min">
+                        <input type="number" id="maxQuantity" name="maxQuantity" placeholder="Max">
+                    </div>
+                </div>
+                <button type="submit" class="btn">Apply Filters</button>
+            </form>
+        </aside>
+
+        <!-- Main Product Listing -->
+        <main class="product-listing">
+            <div id="product-grid" class="product-grid">
+                <!-- Products will be dynamically inserted here -->
+            </div>
+            <nav id="pagination" class="pagination">
+                <!-- Pagination links will be dynamically inserted here -->
+            </nav>
+        </main>
+    </div>
+
+    <script src="products.js"></script>
+</body>
+</html>

@@ -11,6 +11,7 @@ import jwt from "jsonwebtoken";
 
 const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
+  
   if (!name || !email || !password) {
     throw createError(400, "All fields are required");
   }
@@ -39,6 +40,8 @@ const register = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
+  console.log("Login");
+  console.log(req.body);
   const { email, password } = req.body;
   if (!email || !password) {
     throw createError(400, "All filds are required.");
@@ -58,7 +61,7 @@ const login = asyncHandler(async (req, res) => {
     },
   ]);
   const user = userArr[0];
-  console.log(user);
+  // console.log(user);
   if (user.length === 0) {
     throw createError(400, "Invalid User.");
   }
@@ -72,7 +75,8 @@ const login = asyncHandler(async (req, res) => {
     { id: user._id, email: user.email, role: user.role },
     process.env.JWT_SECRET
   );
-
+  
+  console.log("User logged in successfully");
   return res.status(200).json({
     message: "User logged in successfully",
     token,

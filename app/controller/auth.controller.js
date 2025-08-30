@@ -1,17 +1,18 @@
 //
 import User from "../model/user.model.js";
 import Role from "../model/role.model.js";
-import Category from "../model/category.model.js"
+import Category from "../model/category.model.js";
 import { Validator } from "node-input-validator";
 import createError from "../helper/apiError.js";
 import bcrypt, { hash } from "bcryptjs";
 import asyncHandler from "express-async-handler";
 import compaerPass from "../helper/comparePassword.js";
 import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
 
 const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
-  
+
   if (!name || !email || !password) {
     throw createError(400, "All fields are required");
   }
@@ -75,50 +76,49 @@ const login = asyncHandler(async (req, res) => {
     { id: user._id, email: user.email, role: user.role },
     process.env.JWT_SECRET
   );
-  
-  console.log("User logged in successfully");
-  return res.status(200).json({
-    message: "User logged in successfully",
-    token,
+
+  res.cookie("Authtoken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
   });
+  console.log("User logged in successfully");
+  return res.redirect('/product/products');
 });
 
 const createRoll = asyncHandler(async (req, res) => {
   const { name, permissions } = req.body;
-  const roleName = name.toLowerCase()
-  const isExist = await Role.findOne({ name:roleName });
+  const roleName = name.toLowerCase();
+  const isExist = await Role.findOne({ name: roleName });
   if (isExist) {
     throw createError(400, "Role already exist");
   }
-  const role = await Role.create({ name:roleName, permissions });
+  const role = await Role.create({ name: roleName, permissions });
   return res.status(201).json({
     message: "Role created successfully",
     role,
   });
 });
 
-const updateRolePermission = asyncHandler(async (req,res) =>{
+const updateRolePermission = asyncHandler(async (req, res) => {
   const { name, permissions } = req.body;
-  const roleName = name.toLowerCase()
+  const roleName = name.toLowerCase();
 
-  const isExist = await Role.findOne({ name:roleName });
+  const isExist = await Role.findOne({ name: roleName });
   if (!isExist) {
     throw createError(400, "Role does not exist");
   }
-  const role = await Role.updateOne({ name:roleName }, { permissions });
+  const role = await Role.updateOne({ name: roleName }, { permissions });
   return res.status(201).json({
     message: "Role updated successfully",
     role,
   });
-
-
-})
-
+});
 
 const authController = {
   register,
   login,
-    createRoll,
-  updateRolePermission
+  createRoll,
+  updateRolePermission,
 };
 export default authController;

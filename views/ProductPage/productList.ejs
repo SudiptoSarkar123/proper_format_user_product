@@ -3,69 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Product Page</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Product Listing</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/productList.css">
+    <style>
+        .product-card {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="page-container">
-        <header>
-            <h1>Explore Our Products</h1>
-            <p>Find the best items that fit your needs.</p>
-        </header>
+    <div class="container">
+        <h1 class="my-4">Products</h1>
 
-        <!-- Filter Bar -->
-        <div class="filter-container">
-            <form id="product-filters">
-                <div class="filter-group search-filter">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="name" name="name" placeholder="Search product name...">
+        <div class="row">
+            <div class="col-md-3">
+                <h4>Filters</h4>
+                <form id="filter-form">
+                    <div class="form-group">
+                        <label for="name">Product Name</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <input type="text" class="form-control" id="category" name="category">
+                    </div>
+                    <div class="form-group">
+                        <label for="subCategory">Sub-Category</label>
+                        <input type="text" class="form-control" id="subCategory" name="subCategory">
+                    </div>
+                    <div class="form-group">
+                        <label for="minPrice">Min Price</label>
+                        <input type="number" class="form-control" id="minPrice" name="minPrice">
+                    </div>
+                    <div class="form-group">
+                        <label for="maxPrice">Max Price</label>
+                        <input type="number" class="form-control" id="maxPrice" name="maxPrice">
+                    </div>
+                    <div class="form-group">
+                        <label for="minQuantity">Min Quantity</label>
+                        <input type="number" class="form-control" id="minQuantity" name="minQuantity">
+                    </div>
+                    <div class="form-group">
+                        <label for="maxQuantity">Max Quantity</label>
+                        <input type="number" class="form-control" id="maxQuantity" name="maxQuantity">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <button type="reset" class="btn btn-secondary" id="reset-filters">Reset Filters</button>
+                </form>
+            </div>
+            <div class="col-md-9">
+                <div id="product-list" class="row">
+                    <!-- Products will be dynamically inserted here -->
                 </div>
-                <div class="filter-group">
-                    <i class="fas fa-tags"></i>
-                    <select id="category" name="category">
-                        <option value="">All Categories</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Apparel">Apparel</option>
-                        <option value="Home Goods">Home Goods</option>
-                        <option value="Books">Books</option>
-                    </select>
-                </div>
-                <div class="filter-group price-filter">
-                     <i class="fas fa-dollar-sign"></i>
-                    <input type="number" id="minPrice" name="minPrice" placeholder="Min Price">
-                    <span>-</span>
-                    <input type="number" id="maxPrice" name="maxPrice" placeholder="Max Price">
-                </div>
-                <button type="submit" class="filter-btn">Apply</button>
-            </form>
+                <nav>
+                    <ul class="pagination" id="pagination">
+                        <!-- Pagination will be dynamically inserted here -->
+                    </ul>
+                </nav>
+            </div>
         </div>
-
-        <!-- Product Listing -->
-        <main>
-            <div id="product-list" class="product-grid">
-                <!-- Products will be loaded here via AJAX -->
-            </div>
-
-            <!-- Loading Spinner & Messages -->
-            <div id="loading-indicator" style="display: none;">
-                <div class="spinner"></div>
-            </div>
-            <div id="no-results" style="display: none;">
-                <h3>No Products Found</h3>
-                <p>Try adjusting your filters to find what you're looking for.</p>
-            </div>
-        </main>
-
-        <!-- Pagination -->
-        <nav id="pagination-container"></nav>
-
     </div>
 
-    <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <!-- Your custom script file -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="/js/product.js"></script>
 </body>
 </html>

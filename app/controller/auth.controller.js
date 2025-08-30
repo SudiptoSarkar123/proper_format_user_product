@@ -83,7 +83,7 @@ const login = asyncHandler(async (req, res) => {
     sameSite: "Strict",
   });
   console.log("User logged in successfully");
-  return res.redirect('/product/products');
+  return res.redirect('/api/v1/static/products');
 });
 
 const createRoll = asyncHandler(async (req, res) => {

@@ -8,6 +8,7 @@ import redis from "../../app/config/redis.config.js";
 import mongoose from "mongoose";
 import uploadToCloudinary from "../helper/uploadToCloudinary.js"; 
 import cloudinary from "../config/cloudinary.config.js";
+import { clearProductCache } from "../helper/cache.utils.js";
 
 const createCategory = asyncHandler(async (req, res) => {
   const v = new Validator(req.body, {
@@ -72,6 +73,7 @@ const createProduct = asyncHandler(async (req, res) => {
     subCategory,
   });
   await newProduct.save();
+  await clearProductCache();
   console.log("Product added successfully...");
   return res.status(200).json({
     message: "New product added successfully...",
@@ -109,10 +111,9 @@ const updateProduct = asyncHandler(async (req, res) => {
     });
   }
 
-  await redis.del(cacheKey);
+  await clearProductCache();
   console.log("Databas4e update and cache invalidated.");
 
-  await redis.del("/api/v1/products");
 
   return res.status(200).json(updateProduct);
 });
@@ -157,6 +158,7 @@ const updateProductImage = asyncHandler(async (req,res) =>{
 
   await product.save();
 
+  await clearProductCache();
 
   res.json({success:true, url: product.imageUrl})
 });
@@ -216,7 +218,8 @@ const getAllProducts = asyncHandler(async (req,res)=>{
       query.quantity.$gte = Number(req.query.minQuantity)
     }
     if(req.query.maxQuantity){
-      query.quantity.$gte = Number(req.query.maxQuantity)
+      console.log(req.query.maxQuantity)
+      query.quantity.$lte = Number(req.query.maxQuantity)
     }
   }
 
@@ -240,10 +243,9 @@ const getAllProducts = asyncHandler(async (req,res)=>{
 
   res.status(200).json(response)
 
-  if(req.cacheKey){
-    await redis.set(req.cacheKey, JSON.stringify(response),"EX",3600);
+    await redis.set(`products:${req.originalUrl}`, JSON.stringify(response),"EX",3600);
     console.log("All Products cached in Redis");
-  }
+  
 
   return ;
 

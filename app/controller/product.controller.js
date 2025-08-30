@@ -247,6 +247,7 @@ const getAllProducts = asyncHandler(async (req,res)=>{
     console.log("All Products cached in Redis");
   
 
+    
   return ;
 
 
